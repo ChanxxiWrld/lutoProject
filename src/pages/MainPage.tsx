@@ -47,7 +47,7 @@ const MainPage: React.FC<MainPageProps> = ({
       <MainHeader onProfileClick={onProfileClick} />
 
       {/* Hero Section */}
-      <div className="flex-1 flex flex-col items-center justify-center text-center px-4 min-h-[80vh]">
+      <div className="flex-1 flex flex-col items-center justify-center text-center px-4 min-h-[60vh]">
         <div className="space-y-8 max-w-[460px]">
           <h1 className="text-4xl font-bold text-[#2B4D4D] leading-tight">
             당신의 운세를
