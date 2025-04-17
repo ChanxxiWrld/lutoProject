@@ -1,4 +1,5 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import FortuneTypeCard from '../components/FortuneTypeCard';
 import MainHeader from '../components/MainHeader';
 
@@ -7,40 +8,50 @@ interface MainPageProps {
   onProfileClick: () => void;
 }
 
-const fortuneTypes = [
-  {
-    id: 'daily',
-    title: '오늘의 운세',
-    subtitle: "Today's Fortune",
-    description: '오늘 나의 운세떡은? 오늘은 어떤 일이 벌어질까?',
-    icon: '🎯',
-  },
-  {
-    id: 'love',
-    title: '사랑운',
-    subtitle: 'Love Fortune',
-    description: '당신의 사랑운을 떡으로 알아보세요.',
-    icon: '💝',
-  },
-  {
-    id: 'money',
-    title: '금전운',
-    subtitle: 'Money Fortune',
-    description: '오늘의 재물운을 떡으로 확인해보세요.',
-    icon: '💰',
-  },
-];
-
 const MainPage: React.FC<MainPageProps> = ({
   onFortuneTypeSelect,
   onProfileClick,
 }) => {
+  const navigate = useNavigate();
+
+  const handleFortuneTypeClick = (type: string) => {
+    onFortuneTypeSelect(type);
+    navigate(`/fortune/${type}`);
+  };
+
   const scrollToContent = () => {
     const contentElement = document.getElementById('fortune-content');
     if (contentElement) {
       contentElement.scrollIntoView({ behavior: 'smooth' });
     }
   };
+
+  const fortuneTypes = [
+    {
+      type: 'daily',
+      title: '오늘의 운세',
+      subtitle: '하루의 운세를 알아보세요',
+      description:
+        '오늘 하루 당신의 전반적인 운세에 대해 알아보세요. 금전운, 애정운, 사업운 등을 종합적으로 분석해드립니다.',
+      icon: '🎯',
+    },
+    {
+      type: 'love',
+      title: '연애운',
+      subtitle: '당신의 사랑을 응원합니다',
+      description:
+        '현재 또는 다가올 인연에 대해 알아보세요. 당신의 사랑이 이루어질 수 있도록 도와드립니다.',
+      icon: '💝',
+    },
+    {
+      type: 'money',
+      title: '재물운',
+      subtitle: '금전운을 알아보세요',
+      description:
+        '돈과 관련된 모든 운세를 알아보세요. 재물이 들어올 시기와 주의해야 할 점을 알려드립니다.',
+      icon: '💰',
+    },
+  ];
 
   return (
     <div className="min-h-screen w-full flex flex-col bg-[#E6EBEB]">
@@ -49,13 +60,13 @@ const MainPage: React.FC<MainPageProps> = ({
       {/* Hero Section */}
       <div className="flex-1 flex flex-col items-center justify-center text-center px-4 min-h-[60vh]">
         <div className="space-y-8 max-w-[460px]">
-          <h1 className="text-4xl font-bold text-[#2B4D4D] leading-tight">
+          <h1 className="text-4xl font-brush text-[#8B9D83] leading-tight">
             당신의 운세를
             <br />
             <span className="text-[#C4B998]">떡</span>으로 만나보세요
           </h1>
 
-          <p className="text-lg text-[#436666] leading-relaxed">
+          <p className="text-lg text-[#8B9D83] leading-relaxed">
             매일 아침, 당신만을 위한 특별한 운세 떡이 준비되어 있어요.
             <br />
             오늘의 운세를 확인하고
@@ -64,10 +75,10 @@ const MainPage: React.FC<MainPageProps> = ({
             모아보세요.
           </p>
 
-          <div className="w-full flex justify-center">
+          <div className="flex justify-center">
             <button
               onClick={scrollToContent}
-              className="mt-8 flex flex-col items-center text-[#436666] hover:text-[#2B4D4D] transition-colors"
+              className="mt-8 flex flex-col items-center text-[#8B9D83] hover:text-[#6B7D63] transition-colors"
             >
               <span className="text-sm mb-2">아래로 내려 운세보기</span>
               <div className="animate-bounce-slow">
@@ -96,14 +107,14 @@ const MainPage: React.FC<MainPageProps> = ({
         className="w-full flex justify-center px-4 py-16"
       >
         <div className="w-full max-w-[460px] space-y-4">
-          {fortuneTypes.map(type => (
+          {fortuneTypes.map(fortune => (
             <FortuneTypeCard
-              key={type.id}
-              title={type.title}
-              subtitle={type.subtitle}
-              description={type.description}
-              icon={type.icon}
-              onClick={() => onFortuneTypeSelect(type.id)}
+              key={fortune.type}
+              title={fortune.title}
+              subtitle={fortune.subtitle}
+              description={fortune.description}
+              icon={fortune.icon}
+              onClick={() => handleFortuneTypeClick(fortune.type)}
             />
           ))}
         </div>

@@ -19,6 +19,8 @@
   --background-green: #e6ebeb;
   --text-gold: #c4b998;
   --title-black: #222222;
+  --confirm-green: #1a3e3a;
+  --hover-yellow: #e2cea3;
 }
 
 @layer base {
