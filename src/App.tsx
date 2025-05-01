@@ -8,6 +8,7 @@ import MainPage from './pages/MainPage';
 import FortunePage from './pages/FortunePage';
 import ProfilePage from './pages/ProfilePage';
 import UserInfoPage from './pages/UserInfoPage';
+import FortuneResultPage from './pages/FortuneResultPage';
 
 // FortunePageWrapper 컴포넌트 추가
 const FortunePageWrapper = () => {
@@ -47,6 +48,10 @@ function App() {
         <Route
           path="/user-info"
           element={<UserInfoPage />}
+        />
+        <Route
+          path="/fortune-result"
+          element={<FortuneResultPage />}
         />
       </Routes>
     </Router>

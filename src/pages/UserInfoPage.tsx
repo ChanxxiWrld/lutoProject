@@ -15,6 +15,7 @@ const UserInfoPage: React.FC = () => {
   const [searchParams] = useSearchParams();
   const type = searchParams.get('type');
   const [showTimeModal, setShowTimeModal] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
 
   const [userInfo, setUserInfo] = useState<UserInfo>({
     name: '',
@@ -25,9 +26,33 @@ const UserInfoPage: React.FC = () => {
     calendar: 'solar',
   });
 
+  const validateForm = () => {
+    if (!userInfo.name.trim()) {
+      setErrorMessage('이름을 입력해주세요');
+      return false;
+    }
+    if (!userInfo.birthDate.trim()) {
+      setErrorMessage('생년월일을 입력해주세요');
+      return false;
+    }
+    if (!userInfo.gender) {
+      setErrorMessage('성별을 선택해주세요');
+      return false;
+    }
+    if (!userInfo.isTimeUnknown && !userInfo.birthTime) {
+      setErrorMessage('태어난 시간을 입력해주세요');
+      return false;
+    }
+    return true;
+  };
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    navigate(`/fortune-result/${type}`, { state: userInfo });
+    setErrorMessage('');
+
+    if (validateForm()) {
+      navigate(`/fortune-result?type=${type}`, { state: userInfo });
+    }
   };
 
   const handleChange = (
@@ -56,10 +81,13 @@ const UserInfoPage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#e6ebeb] py-6 px-4">
-      <div className="max-w-md mx-auto">
-        <div className="flex items-center justify-between mb-6">
-          <button className="text-gray-600">
+    <div className="min-h-screen bg-[#e6ebeb]">
+      <div className="bg-[#8d9d83] px-4 py-4">
+        <div className="max-w-md mx-auto flex items-center justify-between">
+          <button
+            className="text-white"
+            onClick={() => navigate(-1)}
+          >
             <svg
               className="w-6 h-6"
               fill="none"
@@ -74,152 +102,166 @@ const UserInfoPage: React.FC = () => {
               />
             </svg>
           </button>
-          <h1 className="text-xl font-medium text-center text-gray-800">
+          <h1 className="text-xl text-center text-white font-brush">
             오늘의 인연
           </h1>
           <div className="w-6"></div>
         </div>
+      </div>
 
-        <div className="bg-white rounded-3xl p-8 shadow-sm">
-          <div className="mb-8">
-            <h2 className="text-2xl font-medium text-[#4A4A4A] mb-2">
-              오늘의 인연
-            </h2>
-            <div className="inline-block px-3 py-1 bg-[#FFE7BA] rounded-full text-sm text-[#4A4A4A]">
-              인연
-            </div>
-            <p className="mt-4 text-[#666666]">
-              오늘 당신의 인연이 될 떡소녀를 만나보세요
-            </p>
-          </div>
-
-          <form
-            onSubmit={handleSubmit}
-            className="space-y-6"
-          >
-            <div>
-              <label className="block text-sm text-[#4A4A4A] mb-2">이름</label>
-              <input
-                type="text"
-                name="name"
-                value={userInfo.name}
-                onChange={handleChange}
-                className="w-full px-4 py-3 rounded-lg bg-[#F8F8F8] border border-[#E5E5E5] focus:outline-none focus:border-[#8B9D83]"
-                placeholder="이름을 입력해주세요"
-              />
+      <div className="px-4 py-6">
+        <div className="max-w-md mx-auto">
+          <div className="bg-white rounded-3xl p-8 shadow-sm">
+            <div className="mb-8">
+              <h2 className="text-2xl font-medium text-[#4A4A4A] mb-2">
+                오늘의 인연
+              </h2>
+              <div className="inline-block px-3 py-1 bg-[#FFE7BA] rounded-full text-sm text-[#4A4A4A]">
+                인연
+              </div>
+              <p className="mt-4 text-[#666666]">
+                오늘 당신의 인연이 될 떡소녀를 만나보세요
+              </p>
             </div>
 
-            <div>
-              <label className="block text-sm text-[#4A4A4A] mb-2">
-                생년월일
-              </label>
-              <div className="flex gap-2">
+            <form
+              onSubmit={handleSubmit}
+              className="space-y-6"
+            >
+              {errorMessage && (
+                <div className="bg-red-50 text-red-500 p-3 rounded-lg text-sm">
+                  {errorMessage}
+                </div>
+              )}
+
+              <div>
+                <label className="block text-sm text-[#4A4A4A] mb-2">
+                  이름
+                </label>
                 <input
                   type="text"
-                  name="birthDate"
-                  value={userInfo.birthDate}
+                  name="name"
+                  value={userInfo.name}
                   onChange={handleChange}
                   className="w-full px-4 py-3 rounded-lg bg-[#F8F8F8] border border-[#E5E5E5] focus:outline-none focus:border-[#8B9D83]"
-                  placeholder="예) 1999.01.01"
+                  placeholder="이름을 입력해주세요"
                 />
-                <div className="flex h-[48px] rounded-lg overflow-hidden border border-[#E5E5E5] min-w-[140px]">
+              </div>
+
+              <div>
+                <label className="block text-sm text-[#4A4A4A] mb-2">
+                  생년월일
+                </label>
+                <div className="flex gap-2">
+                  <input
+                    type="text"
+                    name="birthDate"
+                    value={userInfo.birthDate}
+                    onChange={handleChange}
+                    className="w-full px-4 py-3 rounded-lg bg-[#F8F8F8] border border-[#E5E5E5] focus:outline-none focus:border-[#8B9D83]"
+                    placeholder="예) 1999.01.01"
+                  />
+                  <div className="flex h-[48px] rounded-lg overflow-hidden border border-[#E5E5E5] min-w-[140px]">
+                    <button
+                      type="button"
+                      onClick={() => handleCalendarChange('solar')}
+                      className={`px-4 flex-1 transition-colors ${
+                        userInfo.calendar === 'solar'
+                          ? 'bg-[#6A7D63] text-white'
+                          : 'text-[#666666] hover:bg-[#F8F8F8]'
+                      }`}
+                    >
+                      양력
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => handleCalendarChange('lunar')}
+                      className={`px-4 flex-1 transition-colors ${
+                        userInfo.calendar === 'lunar'
+                          ? 'bg-[#6A7D63] text-white'
+                          : 'text-[#666666] hover:bg-[#F8F8F8]'
+                      }`}
+                    >
+                      음력
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-sm text-[#4A4A4A] mb-2">
+                  성별
+                </label>
+                <div className="flex h-[48px] rounded-lg overflow-hidden border border-[#E5E5E5]">
                   <button
                     type="button"
-                    onClick={() => handleCalendarChange('solar')}
-                    className={`px-4 flex-1 transition-colors ${
-                      userInfo.calendar === 'solar'
+                    onClick={() =>
+                      setUserInfo(prev => ({ ...prev, gender: 'female' }))
+                    }
+                    className={`flex-1 transition-colors ${
+                      userInfo.gender === 'female'
                         ? 'bg-[#6A7D63] text-white'
                         : 'text-[#666666] hover:bg-[#F8F8F8]'
                     }`}
                   >
-                    양력
+                    여자
                   </button>
                   <button
                     type="button"
-                    onClick={() => handleCalendarChange('lunar')}
-                    className={`px-4 flex-1 transition-colors ${
-                      userInfo.calendar === 'lunar'
+                    onClick={() =>
+                      setUserInfo(prev => ({ ...prev, gender: 'male' }))
+                    }
+                    className={`flex-1 transition-colors ${
+                      userInfo.gender === 'male'
                         ? 'bg-[#6A7D63] text-white'
                         : 'text-[#666666] hover:bg-[#F8F8F8]'
                     }`}
                   >
-                    음력
+                    남자
                   </button>
                 </div>
               </div>
-            </div>
 
-            <div>
-              <label className="block text-sm text-[#4A4A4A] mb-2">성별</label>
-              <div className="flex h-[48px] rounded-lg overflow-hidden border border-[#E5E5E5]">
-                <button
-                  type="button"
-                  onClick={() =>
-                    setUserInfo(prev => ({ ...prev, gender: 'female' }))
-                  }
-                  className={`flex-1 transition-colors ${
-                    userInfo.gender === 'female'
-                      ? 'bg-[#6A7D63] text-white'
-                      : 'text-[#666666] hover:bg-[#F8F8F8]'
-                  }`}
-                >
-                  여자
-                </button>
-                <button
-                  type="button"
-                  onClick={() =>
-                    setUserInfo(prev => ({ ...prev, gender: 'male' }))
-                  }
-                  className={`flex-1 transition-colors ${
-                    userInfo.gender === 'male'
-                      ? 'bg-[#6A7D63] text-white'
-                      : 'text-[#666666] hover:bg-[#F8F8F8]'
-                  }`}
-                >
-                  남자
-                </button>
-              </div>
-            </div>
-
-            <div>
-              <label className="block text-sm text-[#4A4A4A] mb-2">
-                태어난 시간
-              </label>
-              <div className="flex items-center gap-2">
-                <input
-                  type="time"
-                  name="birthTime"
-                  value={userInfo.birthTime}
-                  onChange={handleChange}
-                  disabled={userInfo.isTimeUnknown}
-                  className="flex-1 px-4 py-3 rounded-lg bg-[#F8F8F8] border border-[#E5E5E5] focus:outline-none focus:border-[#8B9D83] disabled:bg-[#F8F8F8] disabled:text-[#999999]"
-                />
-                <label className="flex items-center gap-2">
-                  <input
-                    type="checkbox"
-                    checked={userInfo.isTimeUnknown}
-                    onChange={handleTimeUnknownChange}
-                    className="w-4 h-4 text-[#8B9D83]"
-                  />
-                  <span className="text-sm text-[#666666]">시간 모름</span>
+              <div>
+                <label className="block text-sm text-[#4A4A4A] mb-2">
+                  태어난 시간
                 </label>
+                <div className="flex items-center gap-2">
+                  <input
+                    type="time"
+                    name="birthTime"
+                    value={userInfo.birthTime}
+                    onChange={handleChange}
+                    disabled={userInfo.isTimeUnknown}
+                    className="flex-1 px-4 py-3 rounded-lg bg-[#F8F8F8] border border-[#E5E5E5] focus:outline-none focus:border-[#8B9D83] disabled:bg-[#F8F8F8] disabled:text-[#999999]"
+                  />
+                  <label className="flex items-center gap-2">
+                    <input
+                      type="checkbox"
+                      checked={userInfo.isTimeUnknown}
+                      onChange={handleTimeUnknownChange}
+                      className="w-4 h-4 text-[#8B9D83]"
+                    />
+                    <span className="text-sm text-[#666666]">시간 모름</span>
+                  </label>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setShowTimeModal(true)}
+                  className="mt-2 text-sm text-[#999999] hover:text-[#666666] transition-colors"
+                >
+                  * 태어난 시간을 몰라도 되나요?
+                </button>
               </div>
-              <button
-                type="button"
-                onClick={() => setShowTimeModal(true)}
-                className="mt-2 text-sm text-[#999999] hover:text-[#666666] transition-colors"
-              >
-                * 태어난 시간을 몰라도 되나요?
-              </button>
-            </div>
 
-            <button
-              type="submit"
-              className="w-full py-4 bg-[#8B9D83] text-white rounded-lg hover:bg-opacity-90 transition-colors mt-8"
-            >
-              인연 만나러 가기
-            </button>
-          </form>
+              <button
+                type="submit"
+                className="w-full py-4 bg-[#8B9D83] text-white rounded-lg hover:bg-opacity-90 transition-colors mt-8"
+              >
+                인연 만나러 가기
+              </button>
+            </form>
+          </div>
         </div>
       </div>
 
